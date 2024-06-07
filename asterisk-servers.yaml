@@ -1,0 +1,4 @@
+- name: Setup Asterisk servers
+  hosts: asterisk_servers
+  roles:
+    - asterisk

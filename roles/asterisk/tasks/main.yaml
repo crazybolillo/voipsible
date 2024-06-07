@@ -1,0 +1,108 @@
+- name: Prepare
+  become: true
+  tags: pre
+  block:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        pkg:
+          - git
+          - build-essential
+          - uuid-dev
+          - libedit-dev
+          - libxml2-dev
+          - libsqlite3-dev
+          - libssl-dev
+          - pkg-config
+          - unixodbc-dev
+          - unixodbc
+          - odbcinst
+          - odbc-postgresql
+    - name: Add pbx group
+      ansible.builtin.group:
+        name: pbx
+        state: present
+    - name: Add pbx user
+      ansible.builtin.user:
+        name: pbx
+        group: pbx
+        state: present
+    - name: Setup ODBC Driver
+      ansible.builtin.copy:
+        src: 'odbcinst.ini'
+        dest: '/etc/odbcinst.ini'
+        mode: '0644'
+    - name: Setup ODBC DSN
+      ansible.builtin.template:
+        src: 'odbc.ini.j2'
+        dest: '/etc/odbc.ini'
+        owner: 'pbx'
+        group: 'pbx'
+        mode: '0640'
+- name: Build and install
+  become: true
+  tags: install
+  block:
+    - name: Clone Asterisk
+      ansible.builtin.git:
+        repo: "{{ asterisk_repo }}"
+        dest: "{{ asterisk_loc }}"
+        depth: 1
+        version: "{{ asterisk_tag }}"
+    - name: Prepare build
+      ansible.builtin.command:
+        chdir: "{{ asterisk_loc }}"
+        argv:
+          - './configure'
+          - '--with-jansson-bundled'
+        creates: "{{ asterisk_loc }}/config.status"
+    - name: Build Asterisk
+      community.general.make:
+        chdir: "{{ asterisk_loc }}"
+        target: '_all'
+    - name: Install Asterisk
+      community.general.make:
+        chdir: "{{ asterisk_loc }}"
+        target: 'install'
+- name: Configure
+  become: true
+  tags: config
+  block:
+    - name: Create service entry
+      ansible.builtin.copy:
+        src: 'asterisk.service'
+        dest: "{{ asterisk_service_loc }}"
+        mode: '0644'
+    - name: Setup Asterisk ODBC
+      ansible.builtin.template:
+        src: 'res_odbc.conf.j2'
+        dest: '/etc/asterisk/res_odbc.conf'
+        owner: 'pbx'
+        group: 'pbx'
+        mode: '0640'
+    - name: Copy configuration files
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: '/etc/asterisk/'
+        owner: 'pbx'
+        mode: '0640'
+      with_fileglob:
+        - '*.conf'
+    - name: Set permissions
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: 'pbx'
+        group: 'pbx'
+        recurse: true
+      loop:
+        - '/etc/asterisk'
+        - '/var/lib/asterisk'
+        - '/var/run/asterisk'
+        - '/var/spool/asterisk'
+        - '/var/log/asterisk'
+    - name: Enable and start service
+      ansible.builtin.systemd_service:
+        name: 'asterisk'
+        enabled: true
+        state: 'started'

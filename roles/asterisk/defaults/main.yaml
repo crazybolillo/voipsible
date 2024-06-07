@@ -1,0 +1,10 @@
+asterisk_repo: 'https://github.com/asterisk/asterisk.git'
+asterisk_tag: '21.3.1'
+asterisk_loc: '/usr/local/src/asterisk'
+asterisk_service_loc: '/etc/systemd/system/'
+asterisk_db_host: '192.168.121.1'
+asterisk_db_port: 5432
+asterisk_db_name: 'asterisk'
+asterisk_db_user: 'pbx'
+asterisk_db_password: 'pbx'
+asterisk_db_max_conn: 15

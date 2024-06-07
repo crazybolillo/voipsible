@@ -1,0 +1,21 @@
+[Unit]
+Description=Asterisk PBX and telephony daemon.
+After=network.target
+
+[Service]
+Environment=HOME=/var/lib/asterisk
+WorkingDirectory=/var/lib/asterisk
+User=pbx
+Group=pbx
+ExecStart=/usr/sbin/asterisk -f -C /etc/asterisk/asterisk.conf
+ExecReload=/usr/sbin/asterisk -rx 'core reload'
+Restart=always
+RestartSec=4
+
+LimitCORE=infinity
+
+StandardOutput=null
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
