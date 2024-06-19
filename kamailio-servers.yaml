@@ -1,0 +1,4 @@
+- name: Setup Kamailio servers
+  hosts: kamailio_servers
+  roles:
+    - kamailio

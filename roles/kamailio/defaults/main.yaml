@@ -1,0 +1,3 @@
+kamailio_version: kamailio58
+kamailio_rtpengine_version: 11.5
+kamailio_asterisk_addr: 'sip:192.168.121.138:5060;transport=tcp'
