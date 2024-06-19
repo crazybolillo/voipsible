@@ -1,0 +1,4 @@
+kamailio_version: kamailio58
+kamailio_rtpengine_version: 11.5
+kamailio_listen:
+  - "tcp:0.0.0.0:5060"

@@ -1,0 +1,85 @@
+####### Global Parameters #########
+
+#!ifdef WITH_DEBUG
+#!define DBGLEVEL 3
+#!else
+#!define DBGLEVEL 2
+#!endif
+
+/* LOG Levels: 3=DBG, 2=INFO, 1=NOTICE, 0=WARN, -1=ERR, ... */
+debug=DBGLEVEL
+
+memdbg=5
+memlog=5
+
+log_facility=LOG_LOCAL0
+log_prefix="{$mt $hdr(CSeq) $ci} "
+
+children=8
+
+{% for addr in kamailio_listen %}
+listen={{ addr }}
+{% endfor %}
+
+tcp_connection_lifetime=3605
+tcp_max_connections=2048
+
+enable_tls=no
+tls_max_connections=2048
+tls_threads_mode=1
+
+#!define FLB_NATB 6
+#!define FLB_NATSIPPING 7
+
+####### Modules Section ########
+
+loadmodule "tm.so"
+loadmodule "pv.so"
+loadmodule "sl.so"
+loadmodule "tls.so"
+loadmodule "nathelper.so"
+loadmodule "rtpengine.so"
+loadmodule "htable.so"
+loadmodule "pike.so"
+loadmodule "sanity.so"
+loadmodule "jsonrpcs.so"
+loadmodule "kemix.so"
+loadmodule "rr.so"
+loadmodule "siputils.so"
+loadmodule "maxfwd.so"
+loadmodule "dialog.so"
+loadmodule "dispatcher.so"
+
+# ----- jsonrpcs params -----
+modparam("jsonrpcs", "transport", 2)
+modparam("jsonrpcs", "fifo_name", "/var/run/kamailio/kamailio_rpc.fifo")
+
+# ----- sanity params -----
+modparam("sanity", "autodrop", 1)
+modparam("sanity", "default_checks", 3047)
+modparam("sanity", "uri_checks", 8)
+
+# ----- rtpengine params -----
+modparam("rtpengine", "rtpengine_sock", "udp:127.0.0.1:2223")
+
+# ----- tls params -----
+# modparam("tls", "config", "/usr/local/etc/kamailio/tls.cfg")
+
+# ----- pike params -----
+modparam("pike", "sampling_time_unit", 2)
+modparam("pike", "reqs_density_per_unit", 16)
+modparam("pike", "remove_latency", 4)
+
+# ----- htable params -----
+/* ip ban htable with autoexpire after 5 minutes */
+modparam("htable", "htable", "ipban=>size=8;autoexpire=300;")
+
+# ----- rr params -----
+modparam("rr", "append_fromtag", 0)
+
+# ----- dispatcher params -----
+modparam("dispatcher", "list_file", "/etc/kamailio/dispatcher.list")
+
+loadmodule "app_lua.so"
+modparam("app_lua", "load", "/etc/kamailio/kamailio.lua")
+cfgengine "lua"
