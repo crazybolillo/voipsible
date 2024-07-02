@@ -1,0 +1,3 @@
+- name: Print grafana password
+  ansible.builtin.debug:
+    msg: 'Use the following password to log into Grafana: {{ monitoring_admin_password }}'

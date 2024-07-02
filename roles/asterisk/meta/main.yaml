@@ -1,0 +1,4 @@
+dependencies:
+  - role: prometheus.prometheus.node_exporter
+    become: true
+    tags: metrics

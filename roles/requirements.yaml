@@ -1,0 +1,6 @@
+roles:
+  - name: geerlingguy.docker
+    version: master
+  - name: prometheus.prometheus.node_exporter
+    version: 'main'
+    src: https://github.com/prometheus-community/ansible

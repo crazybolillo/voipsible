@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: homer
+    static_configs:
+      - targets: [hepserver:9096]
+{% if monitoring_self %}
+  - job_name: self
+    static_configs:
+      - targets: [172.17.0.1:9100]
+{% endif %}
+{% for name, targets in monitoring_targets.items() %}
+  - job_name: {{ name }}
+    static_configs:
+      - targets:
+{% for target in targets %}
+        - {{ target }}
+{% endfor %}
+{% endfor %}
