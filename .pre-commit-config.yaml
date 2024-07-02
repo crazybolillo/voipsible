@@ -16,7 +16,7 @@ repos:
     hooks:
       - id: ansible-lint
         additional_dependencies:
-          - ansible>=10.*
+          - ansible==10.*
   - repo: https://github.com/JohnnyMorganz/StyLua
     rev: v0.20.0
     hooks:
