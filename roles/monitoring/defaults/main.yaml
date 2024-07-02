@@ -1,0 +1,7 @@
+monitoring_domain: ':80'
+monitoring_targets:
+  asterisk:
+    - '172.17.0.1:8088'
+    - '172.17.0.1:9100'
+monitoring_self: false
+monitoring_admin_password: '{{ lookup("community.general.random_string", length=12) }}'

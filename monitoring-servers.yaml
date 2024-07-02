@@ -1,0 +1,4 @@
+- name: Setup monitoring servers
+  hosts: monitoring_servers
+  roles:
+    - monitoring

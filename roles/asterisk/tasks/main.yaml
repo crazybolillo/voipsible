@@ -74,13 +74,6 @@
         src: 'asterisk.service'
         dest: "{{ asterisk_service_loc }}"
         mode: '0644'
-    - name: Setup Asterisk ODBC
-      ansible.builtin.template:
-        src: 'res_odbc.conf.j2'
-        dest: '/etc/asterisk/res_odbc.conf'
-        owner: 'pbx'
-        group: 'pbx'
-        mode: '0640'
     - name: Copy configuration files
       ansible.builtin.copy:
         src: "{{ item }}"
@@ -89,6 +82,15 @@
         mode: '0640'
       with_fileglob:
         - '*.conf'
+    - name: Render configuration files
+      ansible.builtin.template:
+        src: '{{ item }}'
+        dest: '/etc/asterisk/{{ item.rsplit(".", 1)[0] | basename }}'
+        mode: '0644'
+      loop:
+        - 'hep.conf.j2'
+        - 'http.conf.j2'
+        - 'res_odbc.conf.j2'
     - name: Set permissions
       ansible.builtin.file:
         path: "{{ item }}"
