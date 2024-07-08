@@ -11,6 +11,8 @@ server will meet the following criteria:
 * Asterisk runs as a 'pbx' user.
 * Exports metrics from node_exporter and from Asterisk's `res_prometheus.so`.
 * Integrates with Heplify Server.
+* (Optional) Installs Crowdsec, the Asterisk Hub collection and sets up log acquisition to ban brute force login
+attacks.
 
 ## Making your first call
 The configuration files come with a TCP transport setup and the extension 3001 configured to play

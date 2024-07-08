@@ -3,3 +3,4 @@ rules:
     present: false
   indentation:
     spaces: 2
+  line-length: disable
