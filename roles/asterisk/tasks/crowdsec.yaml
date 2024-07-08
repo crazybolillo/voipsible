@@ -1,0 +1,43 @@
+- name: Prepare
+  become: true
+  tags: pre
+  block:
+    - name: Add crowdsec repository
+      ansible.builtin.deb822_repository:
+        name: crowdsec
+        suites: '{{ ansible_lsb.codename }}'
+        components: main
+        uris: 'https://packagecloud.io/crowdsec/crowdsec/debian/'
+        signed_by: 'https://packagecloud.io/crowdsec/crowdsec/gpgkey'
+- name: Install
+  become: true
+  tags: install
+  block:
+    - name: Install crowdsec
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        pkg:
+          - crowdsec
+          - crowdsec-firewall-bouncer-nftables
+    - name: Install Asterisk collection
+      ansible.builtin.command:
+        argv: ['cscli', 'collections', 'install', 'asterisk']
+        creates: /etc/crowdsec/hub/collections/crowdsecurity/asterisk.yaml
+- name: Config
+  become: true
+  tags: config
+  block:
+    - name: Setup acquisition
+      ansible.builtin.copy:
+        src: acquis.yaml
+        dest: /etc/crowdsec/acquis.d/asterisk.yaml
+        mode: '0644'
+      notify: Reload crowdsec
+    # Needed because the default parser does not always work. See: https://github.com/crowdsecurity/hub/issues/1073
+    - name: Setup parsing
+      ansible.builtin.copy:
+        src: asterisk-logs.yaml
+        dest: /etc/crowdsec/hub/parsers/s01-parse/crowdsecurity/asterisk-logs.yaml
+        mode: '0644'
+      notify: Reload crowdsec

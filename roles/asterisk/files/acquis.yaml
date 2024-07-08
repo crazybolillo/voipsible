@@ -1,0 +1,4 @@
+source: journalctl
+journalctl_filter: ["-u", "asterisk", "--facility", "local6"]
+labels:
+  type: asterisk

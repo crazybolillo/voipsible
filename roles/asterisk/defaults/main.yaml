@@ -12,3 +12,4 @@ asterisk_http_addr: '0.0.0.0'
 asterisk_http_port: 8088
 asterisk_hep_addr: '127.0.0.1:9060'
 asterisk_hep_id: 1
+asterisk_with_crowdsec: true

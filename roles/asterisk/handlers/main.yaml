@@ -1,0 +1,5 @@
+- name: Reload crowdsec
+  become: true
+  ansible.builtin.service:
+    name: crowdsec
+    state: reloaded
