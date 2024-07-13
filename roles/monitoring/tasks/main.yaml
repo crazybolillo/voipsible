@@ -32,7 +32,7 @@
         dest: '/srv/monitoring/grafana.ini'
         mode: '0644'
         force: false
-      notify: print grafana password
+      notify: Print grafana password
     - name: Start services
       community.docker.docker_compose_v2:
         project_src: '/srv/monitoring'
