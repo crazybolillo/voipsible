@@ -22,7 +22,7 @@
           - crowdsec-firewall-bouncer-nftables
     - name: Install Asterisk collection
       ansible.builtin.command:
-        argv: ['cscli', 'collections', 'install', 'asterisk']
+        argv: ['cscli', 'collections', 'install', 'crowdsecurity/asterisk']
         creates: /etc/crowdsec/hub/collections/crowdsecurity/asterisk.yaml
 - name: Config
   become: true
@@ -32,12 +32,5 @@
       ansible.builtin.copy:
         src: acquis.yaml
         dest: /etc/crowdsec/acquis.d/asterisk.yaml
-        mode: '0644'
-      notify: Reload crowdsec
-    # Needed because the default parser does not always work. See: https://github.com/crowdsecurity/hub/issues/1073
-    - name: Setup parsing
-      ansible.builtin.copy:
-        src: asterisk-logs.yaml
-        dest: /etc/crowdsec/hub/parsers/s01-parse/crowdsecurity/asterisk-logs.yaml
         mode: '0644'
       notify: Reload crowdsec
