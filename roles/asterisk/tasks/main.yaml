@@ -1,9 +1,8 @@
 - name: Install Asterisk
   ansible.builtin.include_tasks:
     file: asterisk.yaml
-  tags: [pre, install, config]
+  tags: [asterisk]
 - name: Install Crowdsec
   ansible.builtin.include_tasks:
     file: crowdsec.yaml
-  tags: [pre, install, config]
-  when: asterisk_with_crowdsec
+  tags: [crowdsec]

@@ -19,6 +19,7 @@
           - unixodbc
           - odbcinst
           - odbc-postgresql
+          - libsrtp2-dev
     - name: Add pbx group
       ansible.builtin.group:
         name: pbx
@@ -56,7 +57,7 @@
         argv:
           - './configure'
           - '--with-jansson-bundled'
-        creates: "{{ asterisk_loc }}/config.status"
+        creates: "{{ asterisk_loc }}/include/asterisk/build.h"
     - name: Build Asterisk
       community.general.make:
         chdir: "{{ asterisk_loc }}"
