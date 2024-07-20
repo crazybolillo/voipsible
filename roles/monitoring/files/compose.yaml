@@ -4,6 +4,7 @@ services:
     image: caddy
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
     ports:
       - '80:80'
       - '443:443'
