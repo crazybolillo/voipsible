@@ -1,0 +1,95 @@
+- name: Prepare
+  become: true
+  tags: pre
+  block:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        pkg:
+          - git
+          - build-essential
+          - cmake
+          - autoconf
+          - automake
+          - libtool-bin
+          - pkg-config
+          - libpq-dev
+          - libsqlite3-dev
+          - libcurl4-openssl-dev
+          - libjpeg-dev
+          - libpcre3-dev
+          - libspeexdsp-dev
+          - libldns-dev
+          - libedit-dev
+          - yasm
+          - libtiff-dev
+          - libavformat-dev
+          - libswscale-dev
+          - liblua5.4-dev
+          - libopus-dev
+          - libsndfile1-dev
+- name: Build and install
+  become: true
+  tags: install
+  block:
+    - name: Clone SpanDSP
+      ansible.builtin.git:
+        repo: "{{ freeswitch_spandsp_repo }}"
+        dest: "{{ freeswitch_spandsp_loc }}"
+        version: 0d2e6ac65e0e8f53d652665a743015a88bf048d4
+        depth: 1
+    - name: Build SpanDSP
+      ansible.builtin.shell:
+        cmd: ./bootstrap.sh && ./configure && make && make install
+        chdir: "{{ freeswitch_spandsp_loc }}"
+        creates: "{{ freeswitch_spandsp_loc }}/src/.libs/libspandsp.so"
+    - name: Clone Sofia SIP
+      ansible.builtin.git:
+        repo: "{{ freeswitch_sofia_repo }}"
+        dest: "{{ freeswitch_sofia_loc }}"
+        version: "{{ freeswitch_sofia_version }}"
+        depth: 1
+    - name: Build Sofia SIP
+      ansible.builtin.shell:
+        cmd: ./bootstrap.sh && ./configure && make && make install
+        chdir: "{{ freeswitch_sofia_loc }}"
+        creates: "{{ freeswitch_sofia_loc }}/libsofia-sip-ua/.libs/libsofia-sip-ua.so"
+    - name: Clone libks
+      ansible.builtin.git:
+        repo: "{{ freeswitch_libks_repo }}"
+        dest: "{{ freeswitch_libks_loc }}"
+        version: "{{ freeswitch_libks_version }}"
+    - name: Build libks
+      ansible.builtin.shell:
+        cmd: ./bootstrap.sh && ./configure && make && make install
+        chdir: "{{ freeswitch_libks_loc }}"
+        creates: "{{ freeswitch_libks_loc }}/libks2.so.2"
+    - name: Clone signalwire-c
+      ansible.builtin.git:
+        repo: "{{ freeswitch_signalwirec_repo }}"
+        dest: "{{ freeswitch_signalwirec_loc }}"
+        version: "{{ freeswitch_signalwirec_version }}"
+        depth: 1
+    - name: Build signalwire-c
+      ansible.builtin.shell:
+        cmd: cmake . && make && make install
+        chdir: "{{ freeswitch_signalwirec_loc }}"
+        creates: "{{ freeswitch_signalwirec_loc }}/libsignalwire_client2.so.2"
+    - name: Clone FreeSWITCH
+      ansible.builtin.git:
+        repo: "{{ freeswitch_repo }}"
+        dest: "{{ freeswitch_loc }}"
+        version: "{{ freeswitch_version }}"
+        depth: 1
+    - name: Build FreeSWITCH
+      ansible.builtin.shell:
+        cmd: ./bootstrap.sh && ./configure && make
+        chdir: "{{ freeswitch_loc }}"
+        creates: "{{ freeswitch_loc }}/fs_cli"
+    - name: Install FreeSWITCH
+      ansible.builtin.shell:
+        cmd: make install
+        chdir: "{{ freeswitch_loc }}"
+        creates: /usr/local/freeswitch/bin/freeswitch
+    # TODO: Install cd-sounds-install cd-moh-install

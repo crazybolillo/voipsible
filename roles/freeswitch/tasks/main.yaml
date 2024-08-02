@@ -1,0 +1,4 @@
+- name: Install FreeSWITCH
+  ansible.builtin.include_tasks:
+    file: freeswitch.yaml
+  tags: [freeswitch]

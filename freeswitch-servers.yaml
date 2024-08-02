@@ -1,0 +1,4 @@
+- name: Setup FreeSWITCH servers
+  hosts: freeswitch_servers
+  roles:
+    - freeswitch
