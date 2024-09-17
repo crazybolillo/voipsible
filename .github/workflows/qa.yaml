@@ -12,8 +12,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install Ansible requirements
-        run: |
-          pip install ansible
-          ansible-galaxy install -r roles/requirements.yaml
+      - name: Install Ansible
+        run: pip install ansible
       - uses: pre-commit/action@v3.0.0
