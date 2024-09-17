@@ -82,7 +82,7 @@
         owner: 'pbx'
         mode: '0640'
       with_fileglob:
-        - '*.conf'
+        - 'asterisk/*.conf'
     - name: Render configuration files
       ansible.builtin.template:
         src: '{{ item }}'
@@ -92,6 +92,12 @@
         - 'hep.conf.j2'
         - 'http.conf.j2'
         - 'res_odbc.conf.j2'
+    - name: Copy tmpfiles.d file configuration
+      ansible.builtin.copy:
+        src: 'tmpfiles-asterisk.conf'
+        dest: '/etc/tmpfiles.d/asterisk.conf'
+        owner: 'root'
+        mode: '0640'
     - name: Set permissions
       ansible.builtin.file:
         path: "{{ item }}"
