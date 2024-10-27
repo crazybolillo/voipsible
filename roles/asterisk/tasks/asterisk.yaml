@@ -20,6 +20,7 @@
           - odbcinst
           - odbc-postgresql
           - libsrtp2-dev
+          - xmlstarlet
     - name: Add pbx group
       ansible.builtin.group:
         name: pbx
@@ -58,6 +59,18 @@
           - './configure'
           - '--with-jansson-bundled'
         creates: "{{ asterisk_loc }}/include/asterisk/build.h"
+    - name: Make menuselect
+      community.general.make:
+        chdir: "{{ asterisk_loc }}"
+        target: 'menuselect.makeopts'
+    - name: Enable Opus
+      ansible.builtin.command:
+        chdir: "{{ asterisk_loc }}"
+        argv:
+          - 'menuselect/menuselect'
+          - '--enable'
+          - 'CODEC_OPUS'
+          - 'menuselect.makeopts'
     - name: Build Asterisk
       community.general.make:
         chdir: "{{ asterisk_loc }}"
