@@ -1,0 +1,14 @@
+freeswitch_spandsp_repo: https://github.com/freeswitch/spandsp
+freeswitch_spandsp_loc: /usr/local/src/spandsp
+freeswitch_sofia_repo: https://github.com/freeswitch/sofia-sip
+freeswitch_sofia_loc: /usr/local/src/sofia-sip
+freeswitch_sofia_version: v1.13.17
+freeswitch_libks_repo: https://github.com/signalwire/libks
+freeswitch_libks_loc: /usr/local/src/libks
+freeswitch_libks_version: v2.0.5
+freeswitch_signalwirec_repo: https://github.com/signalwire/signalwire-c
+freeswitch_signalwirec_loc: /usr/local/src/signalwire-c
+freeswitch_signalwirec_version: v2.0.0
+freeswitch_repo: https://github.com/signalwire/freeswitch.git
+freeswitch_loc: /usr/local/src/freeswitch
+freeswitch_version: v1.10.11
